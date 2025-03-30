@@ -10,7 +10,7 @@ describe("Task Service", () => {
     description: "Desc",
     completed: false,
     userId: "123",
-    createdAt: new Date().toISOString()
+    createdAt: new Date().toISOString(),
   };
 
   beforeEach(() => {
@@ -25,13 +25,13 @@ describe("Task Service", () => {
   });
 
   it("debe crear una tarea", async () => {
-    (repo.createTask as jest.Mock).mockResolvedValue({ id: "1" });
+    (repo.createTask as jest.Mock).mockResolvedValue({id: "1"});
     const result = await service.addTask({
       title: "Nueva",
       description: "",
       completed: false,
       userId: "123",
-      createdAt: new Date().toISOString()
+      createdAt: new Date().toISOString(),
     });
     expect(result.id).toBe("1");
   });
@@ -45,8 +45,9 @@ describe("Task Service", () => {
 
   it("debe editar una tarea", async () => {
     (repo.updateTask as jest.Mock).mockResolvedValue(undefined);
-    await expect(service.modifyTask("1", { title: "Actualizado" })).resolves.toBeUndefined();
-    expect(repo.updateTask).toHaveBeenCalledWith("1", { title: "Actualizado" });
+    await expect(service.modifyTask("1", {title: "Actualizado"}))
+      .resolves.toBeUndefined();
+    expect(repo.updateTask).toHaveBeenCalledWith("1", {title: "Actualizado"});
   });
 
   it("debe eliminar una tarea", async () => {

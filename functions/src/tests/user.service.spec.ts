@@ -1,6 +1,6 @@
 import * as repo from "../api/users/user.repository";
 import * as service from "../api/users/user.service";
-import { User } from "../api/users/user.entity";
+import {User} from "../api/users/user.entity";
 
 jest.mock("../api/users/user.repository");
 
@@ -10,7 +10,7 @@ describe("User Service", () => {
     email: "test@mail.com",
     name: "Test User",
     role: "user",
-    createdAt: new Date().toISOString()
+    createdAt: new Date().toISOString(),
   };
 
   beforeEach(() => {
@@ -41,15 +41,19 @@ describe("User Service", () => {
     const result = await service.createUser({
       email: "test@mail.com",
       name: "Test User",
-      role: "user"
+      role: "user",
     });
     expect(result.name).toBe("Test User");
-    expect(repo.addUser).toHaveBeenCalledWith("test@mail.com", "Test User", "user");
+    expect(repo.addUser).toHaveBeenCalledWith(
+      "test@mail.com",
+      "Test User",
+      "user");
   });
 
   it("debe actualizar un usuario", async () => {
     (repo.updateUser as jest.Mock).mockResolvedValue(undefined);
-    await expect(service.updateUser("u1", "new@mail.com")).resolves.toBeUndefined();
+    await expect(service.updateUser("u1", "new@mail.com"))
+      .resolves.toBeUndefined();
     expect(repo.updateUser).toHaveBeenCalledWith("u1", "new@mail.com");
   });
 
