@@ -10,9 +10,17 @@ const router = Router();
  * /users:
  *   get:
  *     summary: Listar todos los usuarios
+ *     tags:
+ *       - Users
  *     responses:
  *       200:
  *         description: Lista de usuarios
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/User'
  */
 router.get("/", async (req, res, next) => {
   try {
@@ -28,6 +36,24 @@ router.get("/", async (req, res, next) => {
  * /users/{email}:
  *   get:
  *     summary: Obtener usuario por email
+ *     tags:
+ *       - Users
+ *     parameters:
+ *       - in: path
+ *         name: email
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Correo del usuario
+ *     responses:
+ *       200:
+ *         description: Usuario encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ *       404:
+ *         description: Usuario no encontrado
  */
 router.get("/:email", async (req, res, next) => {
   try {
@@ -44,6 +70,21 @@ router.get("/:email", async (req, res, next) => {
  * /users:
  *   post:
  *     summary: Crear un nuevo usuario
+ *     tags:
+ *       - Users
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/UserInput'
+ *     responses:
+ *       201:
+ *         description: Usuario creado exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
  */
 router.post("/", validateBody(UserSchema), async (req, res, next) => {
   try {
@@ -59,6 +100,24 @@ router.post("/", validateBody(UserSchema), async (req, res, next) => {
  * /users/{id}:
  *   put:
  *     summary: Actualizar usuario por ID
+ *     tags:
+ *       - Users
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID del usuario
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/UserInput'
+ *     responses:
+ *       204:
+ *         description: Usuario actualizado correctamente
  */
 router.put("/:id", validateBody(UserSchema), async (req, res, next) => {
   try {
@@ -74,6 +133,18 @@ router.put("/:id", validateBody(UserSchema), async (req, res, next) => {
  * /users/{id}:
  *   delete:
  *     summary: Eliminar usuario por ID
+ *     tags:
+ *       - Users
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID del usuario
+ *     responses:
+ *       204:
+ *         description: Usuario eliminado correctamente
  */
 router.delete("/:id", async (req, res, next) => {
   try {
@@ -89,6 +160,8 @@ router.delete("/:id", async (req, res, next) => {
  * /users/id/{id}:
  *   get:
  *     summary: Obtener usuario por ID
+ *     tags:
+ *       - Users
  *     parameters:
  *       - in: path
  *         name: id
