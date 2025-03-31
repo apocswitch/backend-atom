@@ -4,7 +4,11 @@ import {Task} from "./task.entity";
 const collection = db.collection("tasks");
 
 export const getTasks = async (userId: string) => {
-  const snapshot = await collection.where("userId", "==", userId).get();
+  const snapshot = await collection
+    .where("userId", "==", userId)
+    .orderBy("createdAt", "desc") // 👈 orden descendente
+    .get();
+
   return snapshot.docs.map((doc) => ({id: doc.id, ...doc.data()})) as Task[];
 };
 

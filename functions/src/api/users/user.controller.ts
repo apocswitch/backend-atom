@@ -2,7 +2,7 @@ import {Router} from "express";
 import * as service from "./user.service";
 import {validateBody} from "../../utils/validate";
 import {UserSchema} from "./user.schema";
-import {generateToken} from "../../utils/jwt";
+import {generateAccessToken, generateRefreshToken} from "../../utils/jwt";
 
 const router = Router();
 
@@ -60,7 +60,9 @@ router.get("/:email", async (req, res, next) => {
   try {
     const user = await service.findUserByEmail(req.params.email);
     if (!user) return res.status(404).json({message: "Usuario no encontrado"});
-    return res.json(user);
+    const refreshToken = generateRefreshToken(user.id);
+    const token = generateAccessToken(user.id);
+    return res.json({...user, token, refreshToken});
   } catch (err) {
     return next(err);
   }
@@ -90,8 +92,9 @@ router.get("/:email", async (req, res, next) => {
 router.post("/", validateBody(UserSchema), async (req, res, next) => {
   try {
     const user = await service.createUser(req.body);
-    const token = generateToken(user.id);
-    return res.status(201).json({...user, token});
+    const refreshToken = generateRefreshToken(user.id);
+    const token = generateAccessToken(user.id);
+    return res.status(201).json({...user, token, refreshToken});
   } catch (err) {
     return next(err);
   }
