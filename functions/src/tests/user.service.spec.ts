@@ -8,8 +8,6 @@ describe("User Service", () => {
   const mockUser: User = {
     id: "u1",
     email: "test@mail.com",
-    name: "Test User",
-    role: "user",
     createdAt: new Date().toISOString(),
   };
 
@@ -40,14 +38,10 @@ describe("User Service", () => {
     (repo.addUser as jest.Mock).mockResolvedValue(mockUser);
     const result = await service.createUser({
       email: "test@mail.com",
-      name: "Test User",
-      role: "user",
     });
-    expect(result.name).toBe("Test User");
+    expect(result.email).toBe("test@mail.com");
     expect(repo.addUser).toHaveBeenCalledWith(
-      "test@mail.com",
-      "Test User",
-      "user");
+      "test@mail.com");
   });
 
   it("debe actualizar un usuario", async () => {

@@ -10,8 +10,8 @@ export const findUserByEmail = async (email: string) => {
 };
 
 export const createUser = async (user: Omit<User, "id" | "createdAt">) => {
-  const {email, name, role} = user;
-  return await repo.addUser(email, name, role);
+  const {email} = user;
+  return await repo.addUser(email);
 };
 
 export const updateUser = async (id: string, email: string) => {

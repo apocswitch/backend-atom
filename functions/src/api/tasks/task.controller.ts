@@ -2,6 +2,7 @@ import {Router} from "express";
 import * as service from "./task.service";
 import {validateBody} from "../../utils/validate";
 import {TaskSchema} from "./task.schema";
+import {authenticate} from "../../middleware/auth";
 
 const router = Router();
 
@@ -27,7 +28,7 @@ const router = Router();
  *       404:
  *         description: Tarea no encontrada
  */
-router.get("/id/:id", async (req, res, next) => {
+router.get("/id/:id", authenticate, async (req, res, next) => {
   try {
     const task = await service.getTaskById(req.params.id);
     if (!task) {
@@ -54,7 +55,7 @@ router.get("/id/:id", async (req, res, next) => {
  *               items:
  *                 $ref: '#/components/schemas/Task'
  */
-router.get("/", async (req, res, next) => {
+router.get("/", authenticate, async (req, res, next) => {
   try {
     const tasks = await service.listAllTasks();
     res.json(tasks);
@@ -85,7 +86,7 @@ router.get("/", async (req, res, next) => {
  *               items:
  *                 $ref: '#/components/schemas/Task'
  */
-router.get("/:userId", async (req, res, next) => {
+router.get("/:userId", authenticate, async (req, res, next) => {
   try {
     const tasks = await service.listTasks(req.params.userId);
     res.json(tasks);
@@ -109,14 +110,15 @@ router.get("/:userId", async (req, res, next) => {
  *       201:
  *         description: Tarea creada exitosamente
  */
-router.post("/", validateBody(TaskSchema), async (req, res, next) => {
-  try {
-    const result = await service.addTask(req.body);
-    res.status(201).json(result);
-  } catch (err) {
-    next(err);
-  }
-});
+router.post("/", validateBody(TaskSchema),
+  authenticate, async (req, res, next) => {
+    try {
+      const result = await service.addTask(req.body);
+      res.status(201).json(result);
+    } catch (err) {
+      next(err);
+    }
+  });
 
 /**
  * @swagger
@@ -139,7 +141,7 @@ router.post("/", validateBody(TaskSchema), async (req, res, next) => {
  *       204:
  *         description: Tarea actualizada correctamente
  */
-router.put("/:id", async (req, res, next) => {
+router.put("/:id", authenticate, async (req, res, next) => {
   try {
     await service.modifyTask(req.params.id, req.body);
     res.sendStatus(204);
@@ -163,7 +165,7 @@ router.put("/:id", async (req, res, next) => {
  *       204:
  *         description: Tarea eliminada correctamente
  */
-router.delete("/:id", async (req, res, next) => {
+router.delete("/:id", authenticate, async (req, res, next) => {
   try {
     await service.removeTask(req.params.id);
     res.sendStatus(204);

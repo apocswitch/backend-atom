@@ -2,6 +2,7 @@ import {Router} from "express";
 import * as service from "./user.service";
 import {validateBody} from "../../utils/validate";
 import {UserSchema} from "./user.schema";
+import {generateToken} from "../../utils/jwt";
 
 const router = Router();
 
@@ -88,13 +89,13 @@ router.get("/:email", async (req, res, next) => {
  */
 router.post("/", validateBody(UserSchema), async (req, res, next) => {
   try {
-    const result = await service.createUser(req.body);
-    return res.status(201).json(result);
+    const user = await service.createUser(req.body);
+    const token = generateToken(user.id); // 👈
+    return res.status(201).json({...user, token});
   } catch (err) {
     return next(err);
   }
 });
-
 /**
  * @swagger
  * /users/{id}:

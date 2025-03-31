@@ -15,14 +15,10 @@ export const getUserByEmail = async (email: string): Promise<User | null> => {
   return {id: doc.id, ...doc.data()} as User;
 };
 
-export const addUser = async (
-  email: string,
-  name: string,
-  role: "admin" | "user" = "user"
-): Promise<User> => {
+export const addUser = async (email: string): Promise<User> => {
   const createdAt = new Date().toISOString();
-  const ref = await collection.add({email, name, role, createdAt});
-  return {id: ref.id, email, name, role, createdAt};
+  const ref = await collection.add({email, createdAt});
+  return {id: ref.id, email, createdAt};
 };
 
 
