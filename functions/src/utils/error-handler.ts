@@ -2,6 +2,13 @@ import {Request, Response, NextFunction} from "express";
 import {ZodError} from "zod";
 
 /**
+ * Interfaz para errores con statusCode
+ */
+interface HttpError extends Error {
+  statusCode?: number;
+}
+
+/**
  * Middleware de manejo de errores.
  * @param {Error} err - El error capturado
  * @param {Request} req - Objeto de solicitud HTTP
@@ -13,7 +20,8 @@ export function errorHandler(
   err: unknown,
   req: Request,
   res: Response,
-  _next: NextFunction) {
+  _next: NextFunction
+) {
   console.error("Error atrapado:", err);
 
   if (err instanceof ZodError) {
@@ -26,10 +34,10 @@ export function errorHandler(
     });
   }
 
-  // Error con statusCode personalizado
   if (err instanceof Error && "statusCode" in err) {
-    const status = (err as any).statusCode || 500;
-    return res.status(status).json({message: err.message});
+    const httpError = err as HttpError;
+    return res.status(httpError.statusCode || 500)
+      .json({message: httpError.message});
   }
 
   return res.status(500).json({message: "Error interno del servidor"});

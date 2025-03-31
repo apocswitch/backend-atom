@@ -90,7 +90,7 @@ router.get("/:email", async (req, res, next) => {
 router.post("/", validateBody(UserSchema), async (req, res, next) => {
   try {
     const user = await service.createUser(req.body);
-    const token = generateToken(user.id); // 👈
+    const token = generateToken(user.id);
     return res.status(201).json({...user, token});
   } catch (err) {
     return next(err);
