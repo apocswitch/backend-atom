@@ -1,8 +1,10 @@
 import {Request, Response, NextFunction} from "express";
 import jwt, {JwtPayload} from "jsonwebtoken";
-import * as functions from "firebase-functions";
+// import * as functions from "firebase-functions";
+import {defineSecret} from "firebase-functions/params";
 
-const JWT_SECRET = functions.config().jwt?.secret || "4t0mch4113ng3";
+// const JWT_SECRET = functions.config().jwt?.secret || "4t0mch4113ng3";
+const JWT_SECRET = defineSecret("JWT_SECRET");
 
 /**
  * Middleware para verificar token JWT en las peticiones.
@@ -20,7 +22,7 @@ export function authenticate(req: Request,
   }
 
   try {
-    const decoded = jwt.verify(token, JWT_SECRET) as JwtPayload;
+    const decoded = jwt.verify(token, JWT_SECRET.value()) as JwtPayload;
 
     // Extendemos `req` de forma segura para incluir user
     (req as Request & { user: JwtPayload }).user = decoded;
