@@ -8,8 +8,11 @@ const ACCESS_EXPIRES_IN = "1h";
 const REFRESH_EXPIRES_IN = "7d";
 
 /**
- * Genera un token de acceso (JWT) con expiración corta.
- */
+  * Genera un token de acceso (JWT) con expiración corta.
+  *
+  * @param {string} userId - ID del usuario para incluir en el token.
+  * @return {string} Token de acceso generado.
+  */
 export function generateAccessToken(userId: string): string {
   return jwt.sign({ sub: userId }, jwtSecret.value(), {
     expiresIn: ACCESS_EXPIRES_IN,
